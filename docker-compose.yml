@@ -1,0 +1,60 @@
+version: '3.7'
+services:
+  nginx:
+    container_name: ecole_php_nginx
+    image: nginx:stable-alpine
+    ports:
+      - "8083:80"
+    volumes:
+      - ./:/var/www/api
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - db
+  php:
+    container_name: ecole_php
+    build:
+      context: docker/php
+    ports:
+      - "9003:9000"
+    volumes:
+      - ./:/var/www/api
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    container_name: ecole_php_db
+    environment:
+      MYSQL_DATABASE: ecole_php_db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+  phpmya:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db
+    ports:
+      - "8900:80"
+
+###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:${POSTGRES_VERSION:-15}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+volumes:
+  db-data:
+
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###

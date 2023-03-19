@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <div class="container mt-5">
+        <h1>Category List</h1>
+        <p><a class="btn btn-primary" href="{{ path('app_category') }}">Add</a></p>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.description }}</td>
+                            <td>
+                                <a href="{{ path('remove', {'id': product.id}) }}" class="btn btn-danger">Delete</a>
+                                <a href="{{ path('edit', {'id': product.id}) }}" class="btn btn-warning">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
